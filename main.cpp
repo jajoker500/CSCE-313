@@ -1,3 +1,6 @@
-void main() {
-	int i = 1;
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, world!" << std::endl;
+    return 0;
 }
