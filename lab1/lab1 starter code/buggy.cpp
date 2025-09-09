@@ -88,4 +88,7 @@ int main () {
     // FIXME: print out area of tri and area of quad
     std::cout << "The area of the tri is: " << tri->area() << std::endl; // output the tri area
     std::cout << "The area of the quad is: " << quad->area() << std::endl; // output the quad area
+
+    delete quad; // new shapes needs to be deallocated
+    delete tri; // this is for both quad and tri
 }
