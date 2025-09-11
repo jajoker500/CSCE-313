@@ -62,4 +62,6 @@ int main () {
         waitpid(pid, nullptr, 0); // wait for the first child process to finish
         waitpid(pid2, nullptr, 0); // wait for second child process to finish
     }
+
+    return 0;
 }
