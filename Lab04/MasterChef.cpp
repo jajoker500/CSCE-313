@@ -99,7 +99,7 @@ static void timerHandler( int sig, siginfo_t *si, void *uc )
 // To Complete - Section 3
 void RemoveDepHandler(int sig) {
 	/* TODO This Section - 3 */
-	while(completeCount < completedSteps->size()) {
+	while(static_cast<long unsigned int>(completeCount) < completedSteps->size()) {
 		recipeSteps->RemoveDependency(completedSteps->at(completeCount));
 		++completeCount;
 	}
@@ -139,9 +139,10 @@ int main(int argc, char **argv)
 		vector<Step*> readyList = recipeSteps->GetReadySteps();
 		for(size_t i = 0; i < readyList.size(); ++i){
 			Step* step = readyList.at(i);
-			if(!step->running)
+			if(!step->running) {
 				step->running = true;
 				makeTimer(step, step->duration);
+			}
 		}
 		pause();
 	}
