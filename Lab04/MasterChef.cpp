@@ -14,7 +14,7 @@ using namespace std;
 
 StepList* recipeSteps;
 vector<int>* completedSteps;
-int completeCount = 0;
+volatile int completeCount = 0;
 
 void PrintHelp() // Given
 {
