@@ -1,0 +1,6 @@
+Step,Dependencies,Time (m),Description
+1,,2,Boil water
+2,1,3,Add pasta and cook
+3,2,1,Drain pasta
+4,2,2,Prepare sauce
+5,3|4,1,Combine pasta and sauce
