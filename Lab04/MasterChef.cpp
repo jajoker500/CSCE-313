@@ -14,7 +14,7 @@ using namespace std;
 
 StepList* recipeSteps;
 vector<int>* completedSteps;
-volatile int completeCount = 0;
+volatile int completeCount = 0; // made volatile
 
 void PrintHelp() // Given
 {
@@ -86,10 +86,10 @@ static void timerHandler( int sig, siginfo_t *si, void *uc )
     Step* comp_item = (Step*)si->si_value.sival_ptr;
 
 	/* TODO This Section - 2 */
-	comp_item->PrintComplete();
-	completedSteps->push_back(comp_item->id);
+	comp_item->PrintComplete(); // prints that its done
+	completedSteps->push_back(comp_item->id); // push the step id onto the completedsteps vector
 	// Officially complete the step using completedSteps and completeCount
-	raise(SIGUSR1);
+	raise(SIGUSR1); // raise the remove dep handle
 	// Ready to remove that dependency, call the trigger for the appropriate handler
 	/* End Section - 2 */
 }
@@ -99,9 +99,9 @@ static void timerHandler( int sig, siginfo_t *si, void *uc )
 // To Complete - Section 3
 void RemoveDepHandler(int sig) {
 	/* TODO This Section - 3 */
-	while(static_cast<long unsigned int>(completeCount) < completedSteps->size()) {
-		recipeSteps->RemoveDependency(completedSteps->at(completeCount));
-		++completeCount;
+	while(static_cast<long unsigned int>(completeCount) < completedSteps->size()) { // while the number of know completed is less than the size of the completed steps vector
+		recipeSteps->RemoveDependency(completedSteps->at(completeCount)); // remove the completed step from the recipe steps at the completed steps list at the completed count index
+		++completeCount; // increment the completed count as now officially completed
 	}
 	
 	// Foreach step that has been completed since last run, remove it as a dependency
@@ -130,21 +130,21 @@ int main(int argc, char **argv)
     sigemptyset(&sa.sa_mask);
 
 	/* TODO This Section - 1 */
-	sigaction(SIGRTMIN, &sa, NULL);
-	signal(SIGUSR1, RemoveDepHandler);
+	sigaction(SIGRTMIN, &sa, NULL); // ties the SIGRTMIN signal to be caught and go to timerHandler
+	signal(SIGUSR1, RemoveDepHandler); // ties the SIGUSR1 to RemoveDepHandler
 	// Associate the signal SIGRTMIN with the sa using the sigaction function
 	// Associate the appropriate handler with the SIGUSR1 signal, for removing dependencies
-	int num_steps = recipeSteps->Count();
-	while(num_steps > completeCount) {
-		vector<Step*> readyList = recipeSteps->GetReadySteps();
-		for(size_t i = 0; i < readyList.size(); ++i){
-			Step* step = readyList.at(i);
-			if(!step->running) {
-				step->running = true;
-				makeTimer(step, step->duration);
+	int num_steps = recipeSteps->Count(); // take the og recipe count number
+	while(num_steps > completeCount) { // while the total number of recipes is greater than the number completed
+		vector<Step*> readyList = recipeSteps->GetReadySteps(); // get the ready steps
+		for(size_t i = 0; i < readyList.size(); ++i){ // for each step in ready steps
+			Step* step = readyList.at(i); // get the step
+			if(!step->running) { // if its not running
+				step->running = true; // say its running
+				makeTimer(step, step->duration); // start the timer
 			}
 		}
-		pause();
+		pause(); // wait for a signal
 	}
 	// Until all steps have been completed, check if steps are ready to be run and create a timer for them if so
 	/* End Section - 1 */
