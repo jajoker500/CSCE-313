@@ -4,7 +4,9 @@
 void BankAccount::perform_threadsafe_transaction(const int64_t amount)
 {
         // TODO #6: LOCK other threads from using transaction() at the same time
+        m.lock();
         perform_transaction(amount);
+        m.unlock();
         // TODO #7: UNLOCK for the next thread to access transaction()
 }
 
